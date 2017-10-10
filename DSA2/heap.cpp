@@ -59,7 +59,7 @@ int heap::setKey(const std::string &id, int key)
     return 0;
 }
 
-int heap::deleteMin(std::string *pId, int *pKey, void *ppData, int* oldKey)
+int heap::deleteMin(std::string *pId, int *pKey, void *ppData)
 {
     if (current_size == 0) {
         return 1;
@@ -69,12 +69,7 @@ int heap::deleteMin(std::string *pId, int *pKey, void *ppData, int* oldKey)
         *pId = data[1].id;
     }
     if (pKey != nullptr) {
-        if (oldKey != nullptr) {
-            *pKey = *oldKey;
-        }
-        else {
-            *pKey = data[1].key;
-        }
+        *pKey = data[1].key;
     }
     if (ppData != nullptr) {
         *(static_cast<void **> (ppData)) = data[1].pData;
@@ -91,14 +86,22 @@ int heap::remove(const std::string &id, int *pKey, void *ppData)
     if (!mapping->contains(id)) {
         return 1;
     }
-    //save old key
+    
     node *pn = static_cast<node *> (mapping->getPointer(id));
-    int oldKey = data[getPos(pn)].key;
-    //change key to smallest
-    int lowestKey = data[1].key;
-    setKey(id, lowestKey - 1);
-    //perform deleteMin
-    deleteMin(nullptr,pKey,ppData,&oldKey);
+    int pos = getPos(pn);
+    
+    //retrieve relevant data
+    if (pKey != nullptr) {
+        *pKey = data[1].key;
+    }
+    if (ppData != nullptr) {
+        *(static_cast<void **> (ppData)) = data[1].pData;
+    }
+    //remove node
+    mapping->remove(pn->id);
+    data[pos] = data[current_size--];
+    percolateDown(pos);
+    
     return 0;
 }
 
