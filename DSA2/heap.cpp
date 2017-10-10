@@ -6,29 +6,28 @@
 
 #include "heap.h"
 
-heap::heap(int capacity) {
-    
+heap::heap(int capacity)
+{
     current_size = 0;
-    this.capacity = capacity;
+    this->capacity = capacity;
     data.resize(capacity + 1);
-    
-    //create hashtable
     mapping = new hashTable(2*capacity);
 }
 
-int heap::insert(const std::string &id, int key, void *pv = NULL) {
-    
-    if (current_size == capacity) {
+int heap::insert(const std::string &id, int key, void *pv)
+{
+    if (current_size >= capacity) {
         return 1;
     }
-    if (!hash_p->contains(id)) {
+    if (mapping->contains(id)) {
         return 2;
     }
     
+    //increase size of heap and insert node at the end
     current_size++;
     data[current_size].id = id;
     data[current_size].key = key;
-    data[current_size].pv = pv;
+    data[current_size].pData = pv;
     
     percolateUp(current_size);
     
@@ -38,8 +37,8 @@ int heap::insert(const std::string &id, int key, void *pv = NULL) {
     return 0;
 }
 
-int heap::setKey(const std::string &id, int key) {
-    
+int heap::setKey(const std::string &id, int key)
+{
     bool b;
     node *pn = static_cast<node *> (mapping->getPointer(id, &b));
     
@@ -47,7 +46,7 @@ int heap::setKey(const std::string &id, int key) {
         return 1;
     }
     
-    oldKey = pn->key;
+    int oldKey = pn->key;
     pn->key = key;
     
     if (key > oldKey) {
@@ -59,35 +58,38 @@ int heap::setKey(const std::string &id, int key) {
     
     return 0;
 }
-// deleteMin - return the data associated with the smallest key
-//             and delete that node from the binary heap
-//
-// If pId is supplied (i.e., it is not NULL), write to that address
-// the id of the node being deleted. If pKey is supplied, write to
-// that address the key of the node being deleted. If ppData is
-// supplied, write to that address the associated void pointer.
-//
-// Returns:
-//   0 on success
-//   1 if the heap is empty
-int heap::deleteMin(std::string *pId = NULL, int *pKey = NULL, void *ppData = NULL)
+
+int heap::deleteMin(std::string *pId, int *pKey, void *ppData)
 {
-    if () {
-        
+    if (current_size == 0) {
+        return 1;
     }
+    //retrieve relevant data
+    if (pId != nullptr) {
+        *pId = data[1].id;
+    }
+    if (pKey != nullptr) {
+        *pKey = data[1].key;
+    }
+    if (ppData != nullptr) {
+        ppData = &data[1].pData;
+    }
+    //remove node
+    data[1] = data[current_size--];
+    percolateDown(1);
+    return 0;
 }
-// remove - delete the node with the specified id from the binary heap
-//
-// If pKey is supplied, write to that address the key of the node
-// being deleted. If ppData is supplied, write to that address the
-// associated void pointer.
-//
-// Returns:
-//   0 on success
-//   1 if a node with the given id does not exist
-int heap::remove(const std::string &id, int *pKey = NULL, void *ppData = NULL)
+
+int heap::remove(const std::string &id, int *pKey, void *ppData)
 {
+    if (!mapping->contains(id)) {
+        return 1;
+    }
     
+    int lowestKey = data[1].key;
+    setKey(id, lowestKey - 1);
+    deleteMin(nullptr,pKey,ppData);
+    return 0;
 }
 
 void heap::percolateDown(int posCur)
@@ -97,10 +99,12 @@ void heap::percolateDown(int posCur)
     
     while (posCur*2 <= current_size) {
         
+        //find smallest child
         child = posCur*2;
         if (child != current_size && data[child+1].key < data[child].key) {
             child++;
         }
+        
         if (data[child].key < tmp.key) {
             data[posCur] = data[child];
             mapping->setPointer(data[posCur].id, &data[posCur]);
@@ -108,26 +112,30 @@ void heap::percolateDown(int posCur)
         else {
             break;
         }
-        data[posCur] = tmp;
         posCur = child;
     }
+    data[posCur] = tmp;
     mapping->setPointer(data[posCur].id, &data[posCur]);
 }
 
 void heap::percolateUp(int posCur)
 {
-    while (posCur > 1 && data[posCur].key < data[posCur/2].key) {
+    node tmp = data[posCur];
+    
+    while (posCur > 1 && tmp.key < data[posCur/2].key) {
+        
+        printf("replacing %s with %s\n",data[posCur].id,data[posCur/2].id);
+        
         data[posCur] = data[posCur/2];
         mapping->setPointer(data[posCur].id, &data[posCur]);
         posCur /= 2;
     }
+    data[posCur] = tmp;
     mapping->setPointer(data[posCur].id, &data[posCur]);
 }
 
 int heap::getPos(node *pn)
 {
-    int pos = pn - &data[0];
-    return pos;
+    int p = pn - &data[0];
+    return p;
 }
-
-//check for off by one errors (capacity and current_size)
