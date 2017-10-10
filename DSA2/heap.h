@@ -51,11 +51,13 @@ public:
     // that address the key of the node being deleted. If ppData is
     // supplied, write to that address the associated void pointer.
     //
+    // If oldKey is supplied, set pKey equal to oldKey instead of actual key
+    //
     // Returns:
     //   0 on success
     //   1 if the heap is empty
     //
-    int deleteMin(std::string *pId = NULL, int *pKey = NULL, void *ppData = NULL);
+    int deleteMin(std::string *pId = NULL, int *pKey = NULL, void *ppData = NULL, int *oldKey = NULL);
     
     //
     // remove - delete the node with the specified id from the binary heap

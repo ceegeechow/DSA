@@ -59,7 +59,7 @@ int heap::setKey(const std::string &id, int key)
     return 0;
 }
 
-int heap::deleteMin(std::string *pId, int *pKey, void *ppData)
+int heap::deleteMin(std::string *pId, int *pKey, void *ppData, int* oldKey)
 {
     if (current_size == 0) {
         return 1;
@@ -69,12 +69,18 @@ int heap::deleteMin(std::string *pId, int *pKey, void *ppData)
         *pId = data[1].id;
     }
     if (pKey != nullptr) {
-        *pKey = data[1].key;
+        if (oldKey != nullptr) {
+            *pKey = *oldKey;
+        }
+        else {
+            *pKey = data[1].key;
+        }
     }
     if (ppData != nullptr) {
-        ppData = &data[1].pData;
+        *(static_cast<void **> (ppData)) = data[1].pData;
     }
     //remove node
+    mapping->remove(data[1].id);
     data[1] = data[current_size--];
     percolateDown(1);
     return 0;
@@ -85,10 +91,14 @@ int heap::remove(const std::string &id, int *pKey, void *ppData)
     if (!mapping->contains(id)) {
         return 1;
     }
-    
+    //save old key
+    node *pn = static_cast<node *> (mapping->getPointer(id));
+    int oldKey = data[getPos(pn)].key;
+    //change key to smallest
     int lowestKey = data[1].key;
     setKey(id, lowestKey - 1);
-    deleteMin(nullptr,pKey,ppData);
+    //perform deleteMin
+    deleteMin(nullptr,pKey,ppData,&oldKey);
     return 0;
 }
 
@@ -123,9 +133,6 @@ void heap::percolateUp(int posCur)
     node tmp = data[posCur];
     
     while (posCur > 1 && tmp.key < data[posCur/2].key) {
-        
-        printf("replacing %s with %s\n",data[posCur].id,data[posCur/2].id);
-        
         data[posCur] = data[posCur/2];
         mapping->setPointer(data[posCur].id, &data[posCur]);
         posCur /= 2;
