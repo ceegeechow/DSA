@@ -75,12 +75,12 @@ void* hashTable::getPointer(const std::string &key, bool *b)
 {
     int pos = findPos(key);
     if (pos < 0) {
-        if (*b) {
+        if (b == nullptr) {
             *b = false;
         }
         return NULL;
     }
-    if (*b) {
+    if (b != nullptr) {
         *b = true;
     }
     return data[pos].pv;

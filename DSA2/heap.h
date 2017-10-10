@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "hash.h"
 
 class heap {
     
