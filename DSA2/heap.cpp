@@ -72,7 +72,9 @@ int heap::setKey(const std::string &id, int key) {
 //   1 if the heap is empty
 int heap::deleteMin(std::string *pId = NULL, int *pKey = NULL, void *ppData = NULL)
 {
-    
+    if () {
+        
+    }
 }
 // remove - delete the node with the specified id from the binary heap
 //
@@ -127,3 +129,5 @@ int heap::getPos(node *pn)
     int pos = pn - &data[0];
     return pos;
 }
+
+//check for off by one errors (capacity and current_size)
