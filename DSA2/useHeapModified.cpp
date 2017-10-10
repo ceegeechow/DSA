@@ -29,11 +29,11 @@ void getInteger(string message, int &ref)
         fout << message;
         fin >> ref;
         
-//        if (!fin) {
-//            // Non-integer in input buffer, get out of "fail" state
-//            fin.clear();
-//            inputGood = false;
-//        }
+        if (!fin) {
+            // Non-integer in input buffer, get out of "fail" state
+            fin.clear();
+            inputGood = false;
+        }
         while (fin.get() != '\n'); // clear buffer
     }
 }
@@ -57,7 +57,6 @@ int main(int argc, char**argv)
     heap myHeap1(capacity);
     
     while (1) {
-        
         fout << "\nOptions:" << endl;
         fout << "1 - Insert a new item into the binary heap" << endl;
         fout << "2 - Set the key of a specified item" << endl;

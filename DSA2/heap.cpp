@@ -92,10 +92,10 @@ int heap::remove(const std::string &id, int *pKey, void *ppData)
     
     //retrieve relevant data
     if (pKey != nullptr) {
-        *pKey = data[1].key;
+        *pKey = pn->key;
     }
     if (ppData != nullptr) {
-        *(static_cast<void **> (ppData)) = data[1].pData;
+        *(static_cast<void **> (ppData)) = pn->pData;
     }
     //remove node
     mapping->remove(pn->id);
