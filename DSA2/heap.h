@@ -71,26 +71,22 @@ public:
     
 private:
     
-    // Each item in the hash table contains:
-    // key - a string used as a key.
-    // isOccupied - if false, this entry is empty,
-    //              and the other fields are meaningless.
-    // isDeleted - if true, this item has been lazily deleted.
-    // pv - a pointer related to the key;
-    //      NULL if no pointer was provided to insert.
     class node {
     public:
-        
+        std::string id; // The id of this node
+        int key; // The key of this node
+        void *pData; // A pointer to the actual data
     };
     
-    std::vector<node> data; //data entries in the heap
+    std::vector<node> data; // The actual binary heap
+    hashTable *mapping; // maps ids to node pointers
     
     int capacity; //capacity of heap
-    int filled; //number of items in heap
+    int current_size; //number of items in heap
     
-    *hashItem hash_p; //pointer to hashtable
-    
-    
+    void percolateUp(int posCur);
+    void percolateDown(int posCur);
+    int getPos(node *pn);
 };
 
 #endif //_HEAP_H
