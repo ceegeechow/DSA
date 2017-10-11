@@ -158,6 +158,7 @@ bool hashTable::rehash()
         data[i].isOccupied = false;
         data[i].isDeleted = false;
     }
+    filled = 0;
     //insert old data
     for (int j = 0; j < oldData.size(); j++) {
         if (oldData[j].isOccupied) {
