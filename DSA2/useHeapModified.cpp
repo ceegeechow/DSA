@@ -28,6 +28,7 @@ void getInteger(string message, int &ref)
         
         fout << message;
         fin >> ref;
+        fout << ref << "\n";
         
         if (!fin) {
             // Non-integer in input buffer, get out of "fail" state

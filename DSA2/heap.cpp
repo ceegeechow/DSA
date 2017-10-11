@@ -29,10 +29,10 @@ int heap::insert(const std::string &id, int key, void *pv)
     data[current_size].key = key;
     data[current_size].pData = pv;
     
-    percolateUp(current_size);
-    
     //store string id in hashtable
     mapping->insert(id,&data[current_size]);
+    
+    percolateUp(current_size);
     
     return 0;
 }
