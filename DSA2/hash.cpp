@@ -3,7 +3,6 @@
 //  Camille Chow
 //  9/26/17.
 //  see header file for function definitions
-//  Note: getPointer(), setPointer(), and remove() not defined here
 
 #include "hash.h"
 
@@ -24,18 +23,11 @@ hashTable::hashTable(int size)
 
 int hashTable::insert(const std::string &key, void *pv)
 {
-    //rehash if table is more than half filled, return 2 if fails
-    if (((double)filled/(double)capacity > .5) && !rehash()) {
-        return 2;
-    }
-    
     int p = hash(key);
-    bool del_found = false;
     int del_pos = -1;
     //linear probing
     while (data[p].isOccupied) {
-        if (!del_found && data[p].isDeleted) {
-            del_found = true;
+        if (del_pos == -1 && data[p].isDeleted) {
             del_pos = p;
         }
         if (data[p].key == key) {
@@ -54,10 +46,18 @@ int hashTable::insert(const std::string &key, void *pv)
     if (del_pos != -1) {
         p = del_pos;
     }
+    
     data[p].key = key;
     data[p].isOccupied = true;
     data[p].pv = pv;
+    //printf("pointer: %p\n",pv);
     filled++;
+    
+    //rehash if table is more than half filled, return 2 if fails
+    if (((double)filled/(double)capacity > .5) && !rehash()) {
+        return 2;
+    }
+    
     return 0;
 }
 
@@ -75,12 +75,12 @@ void* hashTable::getPointer(const std::string &key, bool *b)
 {
     int pos = findPos(key);
     if (pos < 0) {
-        if (b != nullptr) {
+        if (b != NULL) {
             *b = false;
         }
         return NULL;
     }
-    if (b != nullptr) {
+    if (b != NULL) {
         *b = true;
     }
     return data[pos].pv;

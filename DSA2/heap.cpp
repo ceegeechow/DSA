@@ -5,6 +5,8 @@
 //  see header file for function definitions
 
 #include "heap.h"
+#include <iostream>
+using namespace std;
 
 heap::heap(int capacity)
 {
@@ -30,7 +32,9 @@ int heap::insert(const std::string &id, int key, void *pv)
     data[current_size].pData = pv;
     
     //store string id in hashtable
+    //printf("address to set pointer to: %p\n",&data[current_size]);
     mapping->insert(id,&data[current_size]);
+    //printf("hashed with pointer to %d\n\n", getPos(static_cast<node *>(mapping->getPointer(id))));
     
     percolateUp(current_size);
     
@@ -39,10 +43,9 @@ int heap::insert(const std::string &id, int key, void *pv)
 
 int heap::setKey(const std::string &id, int key)
 {
-    bool b;
-    node *pn = static_cast<node *> (mapping->getPointer(id, &b));
+    node *pn = static_cast<node *> (mapping->getPointer(id));
     
-    if (!b) {
+    if (pn == NULL) {
         return 1;
     }
     

@@ -1,3 +1,4 @@
+
 //
 // This program allows the user to manipulate a binary heap.
 // The program only inserts string ids with associated keys
@@ -25,11 +26,11 @@ void getInteger(string message, int &ref)
     bool inputGood = false;
     while (!inputGood) {
         inputGood = true;
-        
+
         fout << message;
         fin >> ref;
         fout << ref << "\n";
-        
+
         if (!fin) {
             // Non-integer in input buffer, get out of "fail" state
             fin.clear();
@@ -38,6 +39,7 @@ void getInteger(string message, int &ref)
         while (fin.get() != '\n'); // clear buffer
     }
 }
+
 
 int main(int argc, char**argv)
 {
@@ -50,13 +52,16 @@ int main(int argc, char**argv)
     char* output = argv[2];
     fin.open(input);
     fout.open(output);
-    
+
     // Have user choose capacity for binary heap
     getInteger("Choose a capacity for the binary heap: ", capacity);
-    
+
     // Create the heap
     heap myHeap1(capacity);
-    
+    hashTable *map = myHeap1.mapping;
+
+    int commands;
+
     while (1) {
         fout << "\nOptions:" << endl;
         fout << "1 - Insert a new item into the binary heap" << endl;
@@ -64,81 +69,100 @@ int main(int argc, char**argv)
         fout << "3 - Delete a specified item" << endl;
         fout << "4 - Perform a deleteMin" << endl;
         fout << "5 - Quit" << endl;
-        
+
         // Have the user choose an option
         getInteger("Choose an option: ", option);
         switch(option) {
-                
+
             case 1:
                 // Get data to insert into heap from the user and insert it
-                
+
                 fout << "Enter an id string (to insert): ";
                 getline(fin, stringTmp);
-                
+                fout << stringTmp << "\n";
+
                 getInteger("Enter an associated integer key: ", key);
-                
+
                 retVal = myHeap1.insert(stringTmp, key);
-                
+
                 fout << "\nCall to 'insert' returned: " << retVal << endl;
-                
+
                 break;
-                
+
             case 2:
                 // Get id string and new key from user and change the key
-                
+
                 fout << "Enter an id string (to change its key): ";
                 getline(fin, stringTmp);
-                
+                fout << stringTmp << "\n";
+
                 getInteger("Enter an associated integer key: ", key);
-                
+
                 retVal = myHeap1.setKey(stringTmp, key);
                 fout << "\nCall to 'setKey' returned: " << retVal << endl;
-                
+
                 break;
-                
+
             case 3:
                 // Get id string from user and delete it from the heap
-                
+
                 fout << "Enter an id string (to delete): ";
                 getline(fin, stringTmp);
-                
+                fout << stringTmp << "\n";
+
                 retVal = myHeap1.remove(stringTmp, &key);
                 fout << "\nCall to 'delete' returned: " << retVal << endl;
-                
+
                 if (retVal == 0) {
                     fout << "\nDeleted item with string id \"" << stringTmp
                     << "\" and key " << key << endl;
                 }
-                
+                else {
+                    fout << "\nCommands run: " << commands << endl;
+                    fin.close();
+                    fout.close();
+                    exit(1);
+                }
+
                 break;
-                
+
             case 4:
                 // Perform the deleteMin operation on the heap
-                
+
                 retVal = myHeap1.deleteMin(&stringTmp, &key);
                 fout << "\nCall to 'deleteMin' returned: " << retVal << endl;
-                
+
                 if (retVal == 0) {
                     fout << "\nDeleted item with string id \"" << stringTmp
                     << "\" and key " << key << endl;
                 }
-                
+
                 break;
-                
+
             case 5:
                 fout << "\nGoodbye!" << endl;
                 fin.close();
                 fout.close();
                 exit(0);
-                
+
             default:
                 cerr << "Error, that input is not valid!" << endl;
                 fin.close();
                 fout.close();
                 exit (1);
         }
+        commands++;
+
+        for (int i = 1; i < myHeap1.current_size+1; i++) {
+            string id = myHeap1.data[i].id;
+            heap::node *np = static_cast<heap::node*>(map->getPointer(id));
+            int pos = myHeap1.getPos(np);
+            fout << id << " - " << myHeap1.data[i].key << " - " << std::to_string(pos) << ", ";
+        }
+        fout << endl;
+
     }
-    
+
     cerr << "Error, we should never get here!" << endl;
     exit (1);
 }
