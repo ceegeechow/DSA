@@ -6,17 +6,13 @@
 // arbitrary pointers along with each heap item.
 //
 
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <cstdlib>
+#include <iostream>
 
 #include "heap.h"
 
 using namespace std;
-
-ifstream fin; //input file stream
-ofstream fout; //output file stream
 
 // Read an integer from standard input; if a non-integer is in the
 // buffer, the state is fixed and the user is re-prompted;
@@ -27,31 +23,27 @@ void getInteger(string message, int &ref)
     while (!inputGood) {
         inputGood = true;
 
-        fout << message;
-        fin >> ref;
-        fout << ref << "\n";
+        cout << message;
+        cin >> ref;
+        cout << ref << "\n";
 
-        if (!fin) {
+        if (!cin) {
             // Non-integer in input buffer, get out of "fail" state
-            fin.clear();
+            cin.clear();
             inputGood = false;
         }
-        while (fin.get() != '\n'); // clear buffer
+        while (cin.get() != '\n'); // clear buffer
     }
 }
 
 
-int main(int argc, char**argv)
+int main()
 {
     int capacity = 0;
     int option;
     string stringTmp;
     int key, id;
     int retVal;
-    char* input = argv[1];
-    char* output = argv[2];
-    fin.open(input);
-    fout.open(output);
 
     // Have user choose capacity for binary heap
     getInteger("Choose a capacity for the binary heap: ", capacity);
@@ -63,12 +55,12 @@ int main(int argc, char**argv)
     int commands;
 
     while (1) {
-        fout << "\nOptions:" << endl;
-        fout << "1 - Insert a new item into the binary heap" << endl;
-        fout << "2 - Set the key of a specified item" << endl;
-        fout << "3 - Delete a specified item" << endl;
-        fout << "4 - Perform a deleteMin" << endl;
-        fout << "5 - Quit" << endl;
+        cout << "\nOptions:" << endl;
+        cout << "1 - Insert a new item into the binary heap" << endl;
+        cout << "2 - Set the key of a specified item" << endl;
+        cout << "3 - Delete a specified item" << endl;
+        cout << "4 - Perform a deleteMin" << endl;
+        cout << "5 - Quit" << endl;
 
         // Have the user choose an option
         getInteger("Choose an option: ", option);
@@ -77,50 +69,48 @@ int main(int argc, char**argv)
             case 1:
                 // Get data to insert into heap from the user and insert it
 
-                fout << "Enter an id string (to insert): ";
-                getline(fin, stringTmp);
-                fout << stringTmp << "\n";
+                cout << "Enter an id string (to insert): ";
+                getline(cin, stringTmp);
+                cout << stringTmp << "\n";
 
                 getInteger("Enter an associated integer key: ", key);
 
                 retVal = myHeap1.insert(stringTmp, key);
 
-                fout << "\nCall to 'insert' returned: " << retVal << endl;
+                cout << "\nCall to 'insert' returned: " << retVal << endl;
 
                 break;
 
             case 2:
                 // Get id string and new key from user and change the key
 
-                fout << "Enter an id string (to change its key): ";
-                getline(fin, stringTmp);
-                fout << stringTmp << "\n";
+                cout << "Enter an id string (to change its key): ";
+                getline(cin, stringTmp);
+                cout << stringTmp << "\n";
 
                 getInteger("Enter an associated integer key: ", key);
 
                 retVal = myHeap1.setKey(stringTmp, key);
-                fout << "\nCall to 'setKey' returned: " << retVal << endl;
+                cout << "\nCall to 'setKey' returned: " << retVal << endl;
 
                 break;
 
             case 3:
                 // Get id string from user and delete it from the heap
 
-                fout << "Enter an id string (to delete): ";
-                getline(fin, stringTmp);
-                fout << stringTmp << "\n";
+                cout << "Enter an id string (to delete): ";
+                getline(cin, stringTmp);
+                cout << stringTmp << "\n";
 
                 retVal = myHeap1.remove(stringTmp, &key);
-                fout << "\nCall to 'delete' returned: " << retVal << endl;
+                cout << "\nCall to 'delete' returned: " << retVal << endl;
 
                 if (retVal == 0) {
-                    fout << "\nDeleted item with string id \"" << stringTmp
+                    cout << "\nDeleted item with string id \"" << stringTmp
                     << "\" and key " << key << endl;
                 }
                 else {
-                    fout << "\nCommands run: " << commands << endl;
-                    fin.close();
-                    fout.close();
+                    cout << "\nCommands run: " << commands << endl;
                     exit(1);
                 }
 
@@ -130,25 +120,21 @@ int main(int argc, char**argv)
                 // Perform the deleteMin operation on the heap
 
                 retVal = myHeap1.deleteMin(&stringTmp, &key);
-                fout << "\nCall to 'deleteMin' returned: " << retVal << endl;
+                cout << "\nCall to 'deleteMin' returned: " << retVal << endl;
 
                 if (retVal == 0) {
-                    fout << "\nDeleted item with string id \"" << stringTmp
+                    cout << "\nDeleted item with string id \"" << stringTmp
                     << "\" and key " << key << endl;
                 }
 
                 break;
 
             case 5:
-                fout << "\nGoodbye!" << endl;
-                fin.close();
-                fout.close();
+                cout << "\nGoodbye!" << endl;
                 exit(0);
 
             default:
                 cerr << "Error, that input is not valid!" << endl;
-                fin.close();
-                fout.close();
                 exit (1);
         }
         commands++;
@@ -157,9 +143,9 @@ int main(int argc, char**argv)
             string id = myHeap1.data[i].id;
             heap::node *np = static_cast<heap::node*>(map->getPointer(id));
             int pos = myHeap1.getPos(np);
-            fout << id << " - " << myHeap1.data[i].key << " - " << std::to_string(pos) << ", ";
+            cout << id << " - " << myHeap1.data[i].key << " - " << std::to_string(pos) << ", ";
         }
-        fout << endl;
+        cout << endl;
 
     }
 
