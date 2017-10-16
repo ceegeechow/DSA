@@ -21,7 +21,7 @@ hashTable::hashTable(int size)
     }
 }
 
-int hashTable::insert(const std::string &key, void *pv) //edit - deleted deletePos
+int hashTable::insert(const std::string &key, void *pv)
 {
     int p = hash(key);
     //linear probing
@@ -30,7 +30,7 @@ int hashTable::insert(const std::string &key, void *pv) //edit - deleted deleteP
         if (data[p].key == key) {
             if (data[p].isDeleted) {
                 data[p].isDeleted = false;
-                data[p].pv = pv; //edit
+                data[p].pv = pv;
                 return 0;
             }
             return 1;
@@ -43,7 +43,7 @@ int hashTable::insert(const std::string &key, void *pv) //edit - deleted deleteP
     
     data[p].key = key;
     data[p].isOccupied = true;
-    data[p].isDeleted = false; //edit
+    data[p].isDeleted = false;
     data[p].pv = pv;
     filled++;
     

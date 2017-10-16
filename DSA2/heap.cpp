@@ -102,7 +102,7 @@ int heap::remove(const std::string &id, int *pKey, void *ppData)
     mapping->remove(pn->id);
     data[pos] = data[current_size--];
     percolateDown(pos);
-    percolateUp(pos); //edit
+    percolateUp(pos);
     
     return 0;
 }
