@@ -32,9 +32,7 @@ int heap::insert(const std::string &id, int key, void *pv)
     data[current_size].pData = pv;
     
     //store string id in hashtable
-    //printf("address to set pointer to: %p\n",&data[current_size]);
     mapping->insert(id,&data[current_size]);
-    //printf("hashed with pointer to %d\n\n", getPos(static_cast<node *>(mapping->getPointer(id))));
     
     percolateUp(current_size);
     
@@ -104,6 +102,7 @@ int heap::remove(const std::string &id, int *pKey, void *ppData)
     mapping->remove(pn->id);
     data[pos] = data[current_size--];
     percolateDown(pos);
+    percolateUp(pos); //edit
     
     return 0;
 }

@@ -21,18 +21,16 @@ hashTable::hashTable(int size)
     }
 }
 
-int hashTable::insert(const std::string &key, void *pv)
+int hashTable::insert(const std::string &key, void *pv) //edit - deleted deletePos
 {
     int p = hash(key);
-    int del_pos = -1;
     //linear probing
     while (data[p].isOccupied) {
-        if (del_pos == -1 && data[p].isDeleted) {
-            del_pos = p;
-        }
+
         if (data[p].key == key) {
             if (data[p].isDeleted) {
                 data[p].isDeleted = false;
+                data[p].pv = pv; //edit
                 return 0;
             }
             return 1;
@@ -42,15 +40,11 @@ int hashTable::insert(const std::string &key, void *pv)
             p = 0;
         }
     }
-
-    if (del_pos != -1) {
-        p = del_pos;
-    }
     
     data[p].key = key;
     data[p].isOccupied = true;
+    data[p].isDeleted = false; //edit
     data[p].pv = pv;
-    //printf("pointer: %p\n",pv);
     filled++;
     
     //rehash if table is more than half filled, return 2 if fails
@@ -161,7 +155,7 @@ bool hashTable::rehash()
     filled = 0;
     //insert old data
     for (int j = 0; j < oldData.size(); j++) {
-        if (oldData[j].isOccupied) {
+        if (oldData[j].isOccupied && !oldData[j].isDeleted) {
             insert(oldData[j].key,oldData[j].pv);
         }
     }
