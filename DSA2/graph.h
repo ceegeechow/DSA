@@ -5,20 +5,21 @@
 #include <string>
 #include <list>
 #include <climits>
-using namespace std;
+#include <fstream>
 
 class graph
 {
 public:
+    // makeGraph: takes input file and creates graph from it
+    void makeGraph();
     // insert: inserts vertices/edge into graph with given names/cost
-    void insert(const string &name1, const string &name2, int c);
+    void insert(const std::string &name1, const std::string &name2, int c);
     // dijkstra: runs algorithm on graph
-    void dijkstra(const string &s);
-    // prints results to specified output file
-    // returns:
-    //  0 on success
-    //  -1 on open error
-    int output(const string fname);
+    void dijkstra();
+    // getVertex: gets name of starting vertex for dijkstras alogrithm
+    std::string getVertex();
+    // output: prints results to specified output file
+    void output();
     
 private:
     class edge; //defined below
@@ -28,11 +29,11 @@ private:
     class node
     {
     public:
-        string name; // The name of this node
+        std::string name; // The name of this node
         node* p = NULL; //pointer to previous node (for dijkstra)
         int d = INT_MAX; // path weight (for dijkstra)
         bool known = false; // (for dijkstra)
-        list<edge> adj; // Adjacency list
+        std::list<edge> adj; // Adjacency list
     };
     
     // nested edge class
@@ -44,7 +45,7 @@ private:
         int cost; // cost of edge
     };
     
-    list<node> V; // List of vertices in graph
+    std::list<node> V; // List of vertices in graph
     hashTable *mapping; // mapping of vertices
 };
 

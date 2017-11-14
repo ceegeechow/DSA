@@ -3,6 +3,31 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
+using namespace std;
+
+void graph::makeGraph()
+{
+    string filename;
+    cout << "Enter name of input file: ";
+    cin >> filename;
+    ifstream fin(filename);
+    if (fin.fail())
+    {
+        cerr << "Error opening input file " << filename << "\n";
+        exit(1);
+    }
+    string v1, v2;
+    int c;
+    string line;
+    while (getline(fin,line))
+    {
+        stringstream ss(line);
+        ss >> v1 >> v2 >> c;
+        insert(v1, v2, c);
+    }
+    fin.close();
+}
 
 void graph::insert(const string &name1, const string &name2, int c)
 {
@@ -30,8 +55,9 @@ void graph::insert(const string &name1, const string &name2, int c)
     p1->adj.push_back(e);
 }
 
-void graph::dijkstra(const string &s)
+void graph::dijkstra()
 {
+    string s = getVertex(); //starting node
     heap H = heap(V.size()); //heap to store unknown nodes
     node *ps = static_cast<node *> (mapping->getPointer(s)); //pointer to starting node
     ps->d = 0;
@@ -56,17 +82,32 @@ void graph::dijkstra(const string &s)
     }
 }
 
-int graph::output(const string fname)
+string graph::getVertex()
+{
+    string s;
+    cout << "Enter name of starting vertex: ";
+    cin >> s;
+    while (!mapping->contains(s))
+    {
+        cerr << "Vertex is not in graph! Try again: ";
+        cin >> s;
+    }
+    return s;
+}
+
+void graph::output()
 {
     list<string> path;
     node* currNode;
     //open output file
-    ofstream fout;
-    fout.open(fname);
+    string filename;
+    cout << "Enter name of output file: ";
+    cin >> filename;
+    ofstream fout(filename);
     if (fout.fail())
     {
-        cerr << "Error opening output file " << fname << "\n";
-        return -1;
+        cerr << "Error opening output file " << filename << "\n";
+        exit(1);
     }
     //print path to each node
     for (node n : V)
@@ -97,8 +138,7 @@ int graph::output(const string fname)
             }
         }
         fout << "]\n";
-        path.clear(); //efficient??
+        path.clear();
     }
     fout.close();
-    return 0;
 }
