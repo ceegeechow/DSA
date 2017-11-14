@@ -1,10 +1,12 @@
 #include "graph.h"
 #include "heap.h"
 #include <stdio.h>
+#include <iostream>
+#include <fstream>
 
 void graph::insert(const string &name1, const string &name2, int c)
 {
-    //add vertices that don't already exist in graph
+    //add nodes if they don't already exist in graph
     if (!mapping->contains(name1))
     {
         node n;
@@ -30,13 +32,13 @@ void graph::insert(const string &name1, const string &name2, int c)
 
 void graph::dijkstra(const string &s)
 {
-    heap H = heap(V.size());
-    node *ps = static_cast<node *> (mapping->getPointer(s));
+    heap H = heap(V.size()); //heap to store unknown nodes
+    node *ps = static_cast<node *> (mapping->getPointer(s)); //pointer to starting node
     ps->d = 0;
+    //all nodes begin as unknown
     for (node n : V)
-    {
        H.insert(n.name, n.d, &n);
-    }
+
     node* pv;
     while (H.deleteMin(NULL, NULL, &pv) == 0)
     {
@@ -56,17 +58,47 @@ void graph::dijkstra(const string &s)
 
 int graph::output(const string fname)
 {
-//    FILE* outFile = fopen(fname,"w");
-//    if (outFile == NULL)
-//    {
-//        fprintf(stderr, "Error openning output file '%s'\n", fname);
-//        return -1;
-//    }
-//    
-//    fclose(outFile);
-    return 0;
-}
-
-int main() {
+    list<string> path;
+    node* currNode;
+    //open output file
+    ofstream fout;
+    fout.open(fname);
+    if (fout.fail())
+    {
+        cerr << "Error opening output file " << fname << "\n";
+        return -1;
+    }
+    //print path to each node
+    for (node n : V)
+    {
+        fout << n.name << ": ";
+        if (n.d == INT_MAX)
+        {
+            fout << "NO PATH\n";
+            continue;
+        }
+        else
+        {
+            fout << n.d << " [";
+            currNode = &n;
+            //store names of nodes in order in list
+            do
+            {
+                path.push_front(currNode->name);
+                currNode = currNode->p;
+            } while (currNode != NULL);
+            //print names to output file
+            for (string name : path)
+            {
+                fout << name;
+                if (name == *path.end())
+                    break;
+                fout << ", ";
+            }
+        }
+        fout << "]\n";
+        path.clear(); //efficient??
+    }
+    fout.close();
     return 0;
 }
