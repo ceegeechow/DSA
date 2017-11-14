@@ -39,11 +39,10 @@ void graph::insert(const string &name1, const string &name2, int c)
     //add nodes if they don't already exist in graph
     if (!mapping->contains(name1))
     {
-        node n1;                                                    /// use new????
+        node n1;
         n1.name = name1;
         V.push_back(n1);
         mapping->insert(name1, &V.back());
-        cout << name1 << ": " << &V.back() << "\n";
     }
     if (!mapping->contains(name2))
     {
@@ -51,7 +50,6 @@ void graph::insert(const string &name1, const string &name2, int c)
         n2.name = name2;
         V.push_back(n2);
         mapping->insert(name2, &V.back());
-        cout << name2 << ": " << &V.back() << "\n";
     }
     //add edge with destination name2 and cost c
     node *p1 = static_cast<node *> (mapping->getPointer(name1));
@@ -71,11 +69,10 @@ void graph::dijkstra()
     //all nodes begin as unknown
     list<node>::iterator it;
     for (it = V.begin(); it != V.end(); it++)
-    {
         H.insert((*it).name, it->d, &(*it));
-    }
+    //pop smallest unknown node
     node* pv;
-    while (H.deleteMin(NULL, NULL, &pv) == 0)
+    while (H.deleteMin(NULL, NULL, &pv) == 0 && (pv->d < INT_MAX))
     {
         pv->known = true;
         for (edge e : pv->adj)
