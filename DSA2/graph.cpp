@@ -6,6 +6,11 @@
 #include <sstream>
 using namespace std;
 
+graph::graph()
+{
+    mapping = new hashTable(100);
+}
+
 void graph::makeGraph()
 {
     string filename;
@@ -34,16 +39,16 @@ void graph::insert(const string &name1, const string &name2, int c)
     //add nodes if they don't already exist in graph
     if (!mapping->contains(name1))
     {
-        node n;
-        n.name = name1;
-        V.push_back(n);
+        node n1;                                                    /// use new????
+        n1.name = name1;
+        V.push_back(n1);
         mapping->insert(name1, &V.back());
     }
     if (!mapping->contains(name2))
     {
-        node n;
-        n.name = name2;
-        V.push_back(n);
+        node n2;
+        n2.name = name2;
+        V.push_back(n2);
         mapping->insert(name2, &V.back());
     }
     //add edge with destination name2 and cost c
@@ -132,7 +137,7 @@ void graph::output()
             for (string name : path)
             {
                 fout << name;
-                if (name == *path.end())
+                if (name == path.back())
                     break;
                 fout << ", ";
             }

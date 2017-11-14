@@ -10,6 +10,8 @@
 class graph
 {
 public:
+    // constructor: initializes hashTable
+    graph();
     // makeGraph: takes input file and creates graph from it
     void makeGraph();
     // insert: inserts vertices/edge into graph with given names/cost
