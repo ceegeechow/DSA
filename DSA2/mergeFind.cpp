@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-int M[1000][1000];              //boolean!
+int M[1000][1000];
 int n,m,k;
 string A, B, C;
 
@@ -26,39 +26,46 @@ void printM(int a, int b)
 
 bool isMerge(int i, int j)
 {
-    k = i+j;
-    printf("i: %d, j: %d, k: %d, C: %s\n", i, j, k, C.c_str());
+    printf("%s k: %d\n",C.c_str(), k);
     printM(i,j);
     //check for out of bounds
     if (i > n || j > m)
     {
+        //printf("false\n");
         return false;
     }
     //check for last box
-    if (i == n && j == m)
+    if (i == n && j == m && k == C.length())           //is this correct/enough???
     {
         return true;
     }
     //check if you've been to current box
-    if (M[i][j] == 0)
+    if (!M[i][j])
     {
         return false;
     }
     //check if box below matches the next char
-    if (A[i] == C[k] && printf("going down\n") && isMerge(i+1,j))
+    if (toupper(A[i]) == toupper(C[k]))
     {
         C[k] = toupper(C[k]);
-        return true;
+        k++;
+        return isMerge(i+1,j);
     }
-    printf("down didn't work, going right\n");
     //check if box to the right matches
-    if (B[j] == C[k] && printf("going right\n") && isMerge(i,j+1))
+    else
     {
-        
-        return true;
+        M[i+1][j] = false;
+        if (toupper(B[j]) == toupper(C[k]))
+        {
+            k++;
+            return isMerge(i,j+1);
+        }
+        else
+        {
+            M[i][j+1] = false;              //necessary??? (not for chocolate chips)
+            return false;
+        }
     }
-    M[i][j] = 0;
-    return false;
 }
 
 void clearM()
@@ -68,6 +75,7 @@ void clearM()
         for (int j = 0; j <= m; j++)
             M[i][j] = 1;
     }
+    k = 0;
 }
 
 int main()
@@ -95,17 +103,14 @@ int main()
 //        n = A.length();
 //        m = B.length();
 //        clearM();
-//        if (n+m == C.length() && isMerge(0,0))
+//        if (isMerge(0,0))
 //            fout << C << "\n";
 //        else
 //            fout << "*** NOT A MERGE ***\n";
 //    }
     A = "ab";
     B = "ba";
-    C = "abba";
-//    A = "chocolate";
-//    B = "chips";
-//    C = "cchocholaiptes";
+    C = "abab";
     n = A.length();
     m = B.length();
     clearM();
