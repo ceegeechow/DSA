@@ -4,25 +4,9 @@
 #include <string>
 using namespace std;
 
-int M[1000][1000];              //boolean!
+bool M[1000][1000];
 int n,m;
 string A, B, C;
-
-//void printM(int a, int b)
-//{
-//    for (int i = 0; i <= n; i++)
-//    {
-//        for (int j = 0; j <= m; j++)
-//        {
-//            if (a == i && b == j) {
-//                printf("*");
-//            }
-//            printf("%d\t",M[i][j]);
-//        }
-//        printf("\n");
-//    }
-//    printf("\n");
-//}
 
 bool isMerge(int i, int j)
 {
@@ -36,8 +20,8 @@ bool isMerge(int i, int j)
     {
         return true;
     }
-    //check if you've been to current box           why???
-    if (M[i][j] == 0)
+    //check if you've been to current box
+    if (!M[i][j])
     {
         return false;
     }
@@ -52,7 +36,7 @@ bool isMerge(int i, int j)
     {
         return true;
     }
-    M[i][j] = 0;
+    M[i][j] = false;
     return false;
 }
 
@@ -61,7 +45,7 @@ void clearM()
     for (int i = 0; i <= n; i++)
     {
         for (int j = 0; j <= m; j++)
-            M[i][j] = 1;
+            M[i][j] = true;
     }
 }
 
@@ -92,18 +76,8 @@ int main()
         clearM();
         if (n+m == C.length() && isMerge(0,0))
             fout << C << "\n";
-        else
+        else if (!fin.eof())
             fout << "*** NOT A MERGE ***\n";
     }
-//    A = "ab";
-//    B = "ba";
-//    C = "abab";
-//    A = "chocolate";
-//    B = "chips";
-//    C = "cchocholaiptes";
-//    n = A.length();
-//    m = B.length();
-//    clearM();
-//    printf("C: %s, result: %d\n", C.c_str(), isMerge(0,0));
     return 0;
 }
