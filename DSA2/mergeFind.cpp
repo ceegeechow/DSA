@@ -4,43 +4,61 @@
 #include <string>
 using namespace std;
 
-int M[1000][1000];
-int n,m;
+int M[1000][1000];              //boolean!
+int n,m,k;
+string A, B, C;
 
-bool isMerge(string A, string B, string C, int i, int j, int k)
+void printM(int a, int b)
 {
-    if (i > n || j > m)
-        return false;
-    if (k >= C.length())
-        return false;
-    if (((i == 0 && j == 0) || (i != 0 && A[i-1] == C[k]) || (j != 0 && B[j-1] == C[k])) && M[i][j] != 1) //ugly af!
+    for (int i = 0; i <= n; i++)
     {
-        M[i][j] = 1;
-        k++;
-        if (!isMerge(A,B,C,i+1,j,k)) //if statement necessary???
-            isMerge(A,B,C,i,j+1,k);
-        return true;
+        for (int j = 0; j <= m; j++)
+        {
+            if (a == i && b == j) {
+                printf("*");
+            }
+            printf("%d\t",M[i][j]);
+        }
+        printf("\n");
     }
-    return false;
+    printf("\n");
 }
 
-string deMerge(string A, string B, string C)
+bool isMerge(int i, int j)
 {
-    int k = C.length() - 1;
-    int i = n;
-    int j = m;
-    while (k >= 0)// i > 0 && j > 0) //or???
+    k = i+j;
+    printf("i: %d, j: %d, k: %d, C: %s\n", i, j, k, C.c_str());
+    printM(i,j);
+    //check for out of bounds
+    if (i > n || j > m)
     {
-        if (B[j - 1] == C[k])
-            j--;
-        else
-        {
-            C[k] = toupper(C[k]);
-            i--;
-        }
-        k--;
+        return false;
     }
-    return C;
+    //check for last box
+    if (i == n && j == m)
+    {
+        return true;
+    }
+    //check if you've been to current box
+    if (M[i][j] == 0)
+    {
+        return false;
+    }
+    //check if box below matches the next char
+    if (A[i] == C[k] && printf("going down\n") && isMerge(i+1,j))
+    {
+        C[k] = toupper(C[k]);
+        return true;
+    }
+    printf("down didn't work, going right\n");
+    //check if box to the right matches
+    if (B[j] == C[k] && printf("going right\n") && isMerge(i,j+1))
+    {
+        
+        return true;
+    }
+    M[i][j] = 0;
+    return false;
 }
 
 void clearM()
@@ -48,13 +66,13 @@ void clearM()
     for (int i = 0; i <= n; i++)
     {
         for (int j = 0; j <= m; j++)
-            M[i][j] = 0;
+            M[i][j] = 1;
     }
 }
 
 int main()
 {
-//    string infile, outfile, A, B, C;
+//    string infile, outfile;
 //    cout << "Enter name of input file: ";
 //    cin >> infile;
 //    ifstream fin(infile);
@@ -75,18 +93,22 @@ int main()
 //    {
 //        fin >> A >> B >> C;
 //        n = A.length();
-//        m = B.length;
+//        m = B.length();
 //        clearM();
-//        if (isMerge(A,B,C,0,0,0))
-//            fout << deMerge(A,B,C) << "\n";
+//        if (n+m == C.length() && isMerge(0,0))
+//            fout << C << "\n";
 //        else
 //            fout << "*** NOT A MERGE ***\n";
 //    }
-    string A = "chocolate";
-    string B = "chip";
-    string C = "cchocholaipte";
-    printf("result: %d\n", isMerge(A,B,C,0,0,0));
-    string D = "cchocholaiptes";
-    printf("result: %d\n", isMerge(A,B,D,0,0,0));
+    A = "ab";
+    B = "ba";
+    C = "abba";
+//    A = "chocolate";
+//    B = "chips";
+//    C = "cchocholaiptes";
+    n = A.length();
+    m = B.length();
+    clearM();
+    printf("C: %s, result: %d\n", C.c_str(), isMerge(0,0));
     return 0;
 }
