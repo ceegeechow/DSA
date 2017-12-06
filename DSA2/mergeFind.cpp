@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-bool M[1000][1000];
+bool M[1001][1001];
 int n,m;
 string A, B, C;
 
